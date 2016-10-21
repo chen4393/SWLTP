@@ -87,6 +87,11 @@ Cache::Cache(const std::string &name,
 			block->way_id = way_id;
 			set->lru_list.PushBack(block->lru_node);
 		}
+		set->RRPV=new int[num_ways];
+		int i;
+		for(i=0; i<num_ways; i++){
+			set->RRPV[i]=2;
+		}
 	}
 }
 
@@ -155,6 +160,9 @@ void Cache::setBlock(unsigned set_id,
 		set->lru_list.Erase(block->lru_node);
 		set->lru_list.PushFront(block->lru_node);
 	}
+	if(replacement_policy==ReplacementSWLTP){
+		set->RRPV[way_id]=2;
+	}
 
 	// Set new values for block
 	block->tag = tag;
@@ -195,7 +203,7 @@ void Cache::AccessBlock(unsigned set_id, unsigned way_id)
 
         if (replacement_policy == ReplacementSWLTP)
         {
-                set->RRPVList[way_id] = 0;
+                set->RRPV[way_id] = 0;
         }
             
 }
@@ -222,6 +230,21 @@ unsigned Cache::ReplaceBlock(unsigned set_id)
 
 		// Return way index of the selected block
 		return block->way_id;
+	}
+	
+	//If repalcement policy is SWLTP, return the way ID
+	if(replacement_policy == ReplacementSWLTP) {
+		int i;
+		while(/*not empty*/ 1){
+			for(i=0; i<num_ways; i++){
+				if(set->RRPV[i]==3){
+					return i;
+				}
+			}
+			for(i=0; i<num_ways; i++){
+				set->RRPV[i]++;
+			}
+		}
 	}
 
 	// Random replacement policy
