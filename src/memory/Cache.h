@@ -146,6 +146,7 @@ private:
 
 		// List of blocks in LRU order
 		misc::List<Block> lru_list;
+		int* RRPV;
 
 		// Position in Cache::blocks where the blocks start for this set
 		Block *blocks;
