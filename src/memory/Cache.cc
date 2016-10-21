@@ -234,7 +234,7 @@ unsigned Cache::ReplaceBlock(unsigned set_id)
 	
 	//If repalcement policy is SWLTP, return the way ID
 	if(replacement_policy == ReplacementSWLTP) {
-		int i;
+		unsigned int i;
 		while(/*not empty*/ 1){
 			for(i=0; i<num_ways; i++){
 				if(set->RRPV[i]==3){
