@@ -28,7 +28,8 @@ const misc::StringMap Cache::ReplacementPolicyMap =
 {
 	{ "LRU", ReplacementLRU },
 	{ "FIFO", ReplacementFIFO },
-	{ "Random", ReplacementRandom }
+	{ "Random", ReplacementRandom },
+        { "SWTLP", ReplacementSWLTP }
 };
 
 
@@ -191,6 +192,12 @@ void Cache::AccessBlock(unsigned set_id, unsigned way_id)
 		set->lru_list.Erase(block->lru_node);
 		set->lru_list.PushFront(block->lru_node);
 	}
+
+        if (replacement_policy == ReplacementSWLTP)
+        {
+                set->RRPVList[way_id] = 0;
+        }
+            
 }
 
 

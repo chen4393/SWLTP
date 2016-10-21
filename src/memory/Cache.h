@@ -39,7 +39,8 @@ public:
 		ReplacementInvalid,
 		ReplacementLRU,
 		ReplacementFIFO,
-		ReplacementRandom
+		ReplacementRandom,
+                ReplacementSWLTP
 	};
 
 	/// String map for ReplacementPolicy
@@ -90,6 +91,9 @@ public:
 		// Block state
 		BlockState state = BlockInvalid;
 
+                // RRPV
+                unsigned int rrpv = 2; //assuming 3 max RRPV
+                
 		// The block belongs to an LRU list
 		misc::List<Block>::Node lru_node;
 	
@@ -118,6 +122,18 @@ public:
 			this->state = state;
 			this->tag = tag;
 		}
+
+                /// On block hit, rrpv value is set to zero
+                void RRIPhit()
+                {
+                        this->rrpv = 0;
+                }
+
+                /// On a miss, 
+                void RRIPmiss()
+                {
+                        this->rrpv = 3 ? 3 : (this->rrpv + 1);
+                }
 	};
 
 private:
