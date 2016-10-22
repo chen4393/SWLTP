@@ -88,7 +88,7 @@ Cache::Cache(const std::string &name,
 			set->lru_list.PushBack(block->lru_node);
 		}
 		set->RRPV=new int[num_ways];
-		int i;
+		unsigned int i;
 		for(i=0; i<num_ways; i++){
 			set->RRPV[i]=2;
 		}
