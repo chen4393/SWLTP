@@ -29,7 +29,7 @@ const misc::StringMap Cache::ReplacementPolicyMap =
 	{ "LRU", ReplacementLRU },
 	{ "FIFO", ReplacementFIFO },
 	{ "Random", ReplacementRandom },
-        { "SWTLP", ReplacementSWLTP }
+        { "SWLTP", ReplacementSWLTP }
 };
 
 
