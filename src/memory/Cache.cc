@@ -87,6 +87,8 @@ Cache::Cache(const std::string &name,
 			block->way_id = way_id;
 			set->lru_list.PushBack(block->lru_node);
 		}
+		
+		//initialize each sets' RRPV register
 		set->RRPV=new int[num_ways];
 		unsigned int i;
 		for(i=0; i<num_ways; i++){
@@ -160,7 +162,7 @@ void Cache::setBlock(unsigned set_id,
 		set->lru_list.Erase(block->lru_node);
 		set->lru_list.PushFront(block->lru_node);
 	}
-	if(replacement_policy==ReplacementSWLTP){
+	if (replacement_policy==ReplacementSWLTP){
 		set->RRPV[way_id]=2;
 	}
 
