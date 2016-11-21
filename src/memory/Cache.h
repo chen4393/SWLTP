@@ -132,7 +132,7 @@ public:
                 /// On a miss, 
                 void RRIPmiss()
                 {
-                        this->rrpv = 3 ? 3 : (this->rrpv + 1);
+                        this->rrpv = (this->rrpv == 3) ? 3 : (this->rrpv + 1);
                 }
 	};
 
