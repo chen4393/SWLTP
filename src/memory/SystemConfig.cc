@@ -155,7 +155,10 @@ const std::string System::help_message =
 	"      by the product Sets * Assoc * BlockSize.\n"
 	"  Latency = <cycles> (Required)\n"
 	"      Hit latency for a cache in number of cycles.\n"
-	"  Policy = {LRU|FIFO|Random} (Default = LRU)\n"
+	"  RRPVMaxValue = <max RRPV> (Optional)\n"
+	"      Maximum possible rereference prediction value for an RRIP replacement\n"
+	"      policy implementation\n"
+	"  Policy = {LRU|FIFO|Random|SWLTP} (Default = LRU)\n"
 	"      Block replacement policy.\n"
 	"  WritePolicy = {WriteBack|WriteThrough} (Default = WriteBack)\n"
 	"      Cache write policy.\n"
@@ -492,6 +495,7 @@ Module *System::ConfigReadCache(misc::IniFile *ini_file,
 	int num_sets = ini_file->ReadInt(geometry_section, "Sets", 16);
 	int num_ways = ini_file->ReadInt(geometry_section, "Assoc", 2);
 	int block_size = ini_file->ReadInt(geometry_section, "BlockSize", 256);
+	int RRPV_max = ini_file->ReadInt(geometry_section, "RRPVMaxValue", 0);
 	int latency = ini_file->ReadInt(geometry_section, "Latency", 1);
 	int directory_latency = ini_file->ReadInt(geometry_section, "DirectoryLatency", 0);
 	std::string replacement_policy_str = ini_file->ReadString(geometry_section,
@@ -618,6 +622,7 @@ Module *System::ConfigReadCache(misc::IniFile *ini_file,
 	module->setCache(num_sets,
 			num_ways,
 			block_size,
+			RRPV_max,
 			replacement_policy,
 			write_policy);
 

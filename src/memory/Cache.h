@@ -92,7 +92,7 @@ public:
 		BlockState state = BlockInvalid;
 
                 // RRPV
-                unsigned int rrpv = 2; //assuming 3 max RRPV
+                unsigned int rrpv = RRPV_max_value - 1; /*initialized as long RRPV*/
                 
 		// The block belongs to an LRU list
 		misc::List<Block>::Node lru_node;
@@ -146,6 +146,8 @@ private:
 
 		// List of blocks in LRU order
 		misc::List<Block> lru_list;
+
+		// Access to array of RRPV values
 		int* RRPV;
 
 		// Position in Cache::blocks where the blocks start for this set
@@ -169,6 +171,9 @@ private:
 	// Log base 2 of the block size
 	int log_block_size;
 
+	// RRPV maximum value
+	unsigned RRPV_max_value;
+	
 	// Block replacement policy
 	ReplacementPolicy replacement_policy;
 

@@ -52,18 +52,20 @@ const misc::StringMap Cache::BlockStateMap =
 
 
 Cache::Cache(const std::string &name,
-		unsigned num_sets,
-		unsigned num_ways,
-		unsigned block_size,
-		ReplacementPolicy replacement_policy,
-		WritePolicy write_policy)
-		:
-		name(name),
-		num_sets(num_sets),
-		num_ways(num_ways),
-		block_size(block_size),
-		replacement_policy(replacement_policy),
-		write_policy(write_policy)
+	     unsigned num_sets,
+	     unsigned num_ways,
+	     unsigned block_size,
+	     unsigned max_value,
+	     ReplacementPolicy replacement_policy,
+	     WritePolicy write_policy)
+	     :
+	     name(name),
+	     num_sets(num_sets),
+	     num_ways(num_ways),
+	     block_size(block_size),
+	     RRPV_max_value(RRPV_max_value),
+	     replacement_policy(replacement_policy),
+	     write_policy(write_policy)
 {
 	// Derived fields
 	assert(!(num_sets & (num_sets - 1)));
@@ -162,8 +164,11 @@ void Cache::setBlock(unsigned set_id,
 		set->lru_list.Erase(block->lru_node);
 		set->lru_list.PushFront(block->lru_node);
 	}
-	if (replacement_policy==ReplacementSWLTP){
-		set->RRPV[way_id]=2;
+	
+	//Upon insertion, blocks are given a long rereference prediction value
+	if (replacement_policy==ReplacementSWLTP)
+	{
+		set->RRPV[way_id] = this->RRPV_max_value - 1;
 	}
 
 	// Set new values for block
@@ -203,6 +208,7 @@ void Cache::AccessBlock(unsigned set_id, unsigned way_id)
 		set->lru_list.PushFront(block->lru_node);
 	}
 
+	//Set the RRPV to '0' on block reference
         if (replacement_policy == ReplacementSWLTP)
         {
                 set->RRPV[way_id] = 0;
@@ -234,17 +240,26 @@ unsigned Cache::ReplaceBlock(unsigned set_id)
 		return block->way_id;
 	}
 	
-	//If repalcement policy is SWLTP, return the way ID
-	if(replacement_policy == ReplacementSWLTP) {
-		unsigned int i;
-		while(/*not empty*/ 1){
-			for(i=0; i<num_ways; i++){
-				if(set->RRPV[i]==3){
+	//If replacement policy is SWLTP, return the way ID
+	if(replacement_policy == ReplacementSWLTP)
+	{
+		//Perform RRIP RRPV check and update
+		while(1)
+		{
+			//Look for blocks in the set that have a maximum RRPV value
+			for(unsigned i = 0; i < num_ways; i++)
+			{
+				if(set->RRPV[i] == this->RRPV_max_value)
+				{
 					return i;
 				}
 			}
-			for(i=0; i<num_ways; i++){
-				set->RRPV[i]++;
+
+			//If none are found, increment every blocks RRPV value
+			for(unsigned i = 0; i < num_ways; i++)
+			{
+				set->RRPV[i] = (set->RRPV[i] == this->RRPV_max_value) ?
+					RRPV_max_value : (set->RRPV[i] + 1);
 			}
 		}
 	}
