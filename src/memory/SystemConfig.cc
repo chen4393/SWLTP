@@ -126,6 +126,9 @@ const std::string System::help_message =
 	"  DirectoryLatency = <cycles>\n"
 	"      Access latency for directory. This variable is only allowed for a\n"
 	"      main memory module.\n"
+	"  DirectoryRRPVMaxValue = <maximum RRPV value>\n"
+	"      Maximum RRPV value for a cache RRIP implementation. This value will\n"
+	"      have no affect on a main memory module.\n"
 	"  AddressRange = { BOUNDS <low> <high> | ADDR DIV <div> MOD <mod> EQ <eq> }\n"
 	"      Physical address range served by the module. If not specified, the\n"
 	"      entire address space is served by the module. There are two possible\n"
@@ -648,6 +651,7 @@ Module *System::ConfigReadMainMemory(misc::IniFile *ini_file,
 	int num_ports = ini_file->ReadInt(section, "Ports", 2);
 	int directory_size = ini_file->ReadInt(section, "DirectorySize", 131072);
 	int directory_num_ways = ini_file->ReadInt(section, "DirectoryAssoc", 16);
+	int directory_RRPV_max_value = ini_file->ReadInt(section, "DirectoryRRPVMaxValue", 0);
 	int directory_latency = ini_file->ReadInt(section, "DirectoryLatency", 1);
 
 	// Check parameters
@@ -719,6 +723,7 @@ Module *System::ConfigReadMainMemory(misc::IniFile *ini_file,
 	module->setCache(directory_num_sets,
 			directory_num_ways,
 			block_size,
+			directory_RRPV_max_value, 
 			Cache::ReplacementLRU,
 			Cache::WriteBack);
 

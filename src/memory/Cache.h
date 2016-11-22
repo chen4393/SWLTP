@@ -91,9 +91,6 @@ public:
 		// Block state
 		BlockState state = BlockInvalid;
 
-                // RRPV
-                unsigned int rrpv = RRPV_max_value - 1; /*initialized as long RRPV*/
-                
 		// The block belongs to an LRU list
 		misc::List<Block>::Node lru_node;
 	
@@ -123,17 +120,6 @@ public:
 			this->tag = tag;
 		}
 
-                /// On block hit, rrpv value is set to zero
-                void RRIPhit()
-                {
-                        this->rrpv = 0;
-                }
-
-                /// On a miss, 
-                void RRIPmiss()
-                {
-                        this->rrpv = (this->rrpv == 3) ? 3 : (this->rrpv + 1);
-                }
 	};
 
 private:
@@ -148,7 +134,7 @@ private:
 		misc::List<Block> lru_list;
 
 		// Access to array of RRPV values
-		int* RRPV;
+		unsigned* RRPV;
 
 		// Position in Cache::blocks where the blocks start for this set
 		Block *blocks;
@@ -200,6 +186,7 @@ public:
 			unsigned num_sets,
 			unsigned num_ways,
 			unsigned block_size,
+	                unsigned RRPV_max_size,
 			ReplacementPolicy replacement_policy,
 			WritePolicy write_policy);
 	

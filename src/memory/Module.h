@@ -444,6 +444,7 @@ public:
 	void setCache(unsigned num_sets,
 			unsigned num_ways,
 			unsigned block_size,
+		        unsigned RRPV_max_value,
 			Cache::ReplacementPolicy replacement_policy,
 			Cache::WritePolicy write_policy)
 	{
@@ -452,6 +453,7 @@ public:
 				num_sets,
 				num_ways,
 				block_size,
+				RRPV_max_value,
 				replacement_policy,
 				write_policy);
 	}

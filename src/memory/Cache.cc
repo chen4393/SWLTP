@@ -55,7 +55,7 @@ Cache::Cache(const std::string &name,
 	     unsigned num_sets,
 	     unsigned num_ways,
 	     unsigned block_size,
-	     unsigned max_value,
+	     unsigned RRPV_max_value,
 	     ReplacementPolicy replacement_policy,
 	     WritePolicy write_policy)
 	     :
@@ -91,10 +91,10 @@ Cache::Cache(const std::string &name,
 		}
 		
 		//initialize each sets' RRPV register
-		set->RRPV=new int[num_ways];
-		unsigned int i;
-		for(i=0; i<num_ways; i++){
-			set->RRPV[i]=2;
+		set->RRPV = new unsigned[num_ways];
+		for(unsigned i = 0; i < num_ways; i++)
+		{
+			set->RRPV[i] = this->RRPV_max_value - 1;
 		}
 	}
 }
