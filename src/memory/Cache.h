@@ -133,9 +133,6 @@ private:
 		// List of blocks in LRU order
 		misc::List<Block> lru_list;
 
-		// Access to array of RRPV values
-		unsigned* RRPV;
-
 		// Position in Cache::blocks where the blocks start for this set
 		Block *blocks;
 	};
