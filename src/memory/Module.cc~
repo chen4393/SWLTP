@@ -158,7 +158,7 @@ long long Module::Access(AccessType access_type,
 		unsigned address,
 		int *witness,
 		esim::Event *return_event,
-		unsigned instr_addr) ///added instr_addr to pass through frame
+		unsigned instr_addr = 0) ///added instr_addr to pass through frame
 {
 	// Create a new event frame
 	auto frame = misc::new_shared<Frame>(

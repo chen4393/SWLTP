@@ -650,8 +650,7 @@ public:
 	long long Access(AccessType access_type,
 			unsigned address,
 			int *witness = nullptr,
-			esim::Event *return_event = nullptr,
-			unsigned instr_addr = 0);
+			esim::Event *return_event = nullptr);
 	
 	/// Add the given frame to the list of in-flight accesses, and record
 	/// its access type. This function is invoked internally by the event

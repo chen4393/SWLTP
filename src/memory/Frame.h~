@@ -192,9 +192,6 @@ public:
 	/// Way of an evicted block
 	int src_way = -1;
 
-	/// Instruction Address of initiating instruction
-	unsigned instr_addr = 0;
-
 	/// Block state
 	Cache::BlockState state = Cache::BlockInvalid;
 

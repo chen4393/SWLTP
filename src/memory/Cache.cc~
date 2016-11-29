@@ -195,7 +195,7 @@ void Cache::getBlock(unsigned set_id,
 }
 
 
-void Cache::AccessBlock(unsigned set_id, unsigned way_id, unsigned addr, unsigned PC_ref)
+void Cache::AccessBlock(unsigned set_id, unsigned way_id, unsigned addr = 0, unsigned PC_ref = 0)
 {
 	// Get set and block
 	Set *set = getSet(set_id);
