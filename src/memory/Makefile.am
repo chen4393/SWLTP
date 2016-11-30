@@ -26,6 +26,9 @@ libmemory_a_SOURCES = \
 	SpecMem.cc \
 	SpecMem.h \
 	\
+	SWLTP.cc \
+	SWLTP.h \
+	\
 	System.cc \
 	SystemConfig.cc \
 	SystemEvents.cc \
