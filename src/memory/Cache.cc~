@@ -102,8 +102,10 @@ Cache::Cache(const std::string &name,
         // If SWLTP is the chose replacement policy, instantiate new SWLTP
         if (replacement_policy == ReplacementSWLTP)
         {
-                this->swltp = new SWLTP();
-        }
+                this->swltp = new SWLTP(num_ways, num_sets);
+        } else {
+		this->swltp = NULL;	
+	}
 }
 
 void Cache::DecodeAddress(unsigned address,
@@ -195,7 +197,7 @@ void Cache::getBlock(unsigned set_id,
 }
 
 
-void Cache::AccessBlock(unsigned set_id, unsigned way_id, unsigned addr = 0, unsigned PC_ref = 0)
+void Cache::AccessBlock(unsigned set_id, unsigned way_id, unsigned addr, unsigned PC_ref)
 {
 	// Get set and block
 	Set *set = getSet(set_id);
@@ -220,13 +222,13 @@ void Cache::AccessBlock(unsigned set_id, unsigned way_id, unsigned addr = 0, uns
         {
                	block->rrpv = RRPV_min_value;
 
-                //update LTP history table and make prediction
-                swltp->predictBlock(addr, PC_ref);
+                //update LTP history table 
+                swltp->Update_History(set_id, way_id, addr, PC_ref);
         }
 }
 
 
-unsigned Cache::ReplaceBlock(unsigned set_id)
+unsigned Cache::ReplaceBlock(unsigned set_id, unsigned n_address)
 {
 	// Get the set
 	Set *set = getSet(set_id);
@@ -252,6 +254,13 @@ unsigned Cache::ReplaceBlock(unsigned set_id)
 	//If replacement policy is SWLTP, return the way ID
 	if((replacement_policy == ReplacementSRRIP) || (replacement_policy == ReplacementSWLTP))
 	{
+		int* predictions=null;		
+		if(replacement_policy==ReplacementSWLTP){
+			predictions=(int*)malloc(num_ways*sizeof(int));
+			swltp->Predict(set_id, n_address, predictions);
+			
+
+		}
 		//Perform RRIP RRPV check and update
 		while(true)
 		{
@@ -259,12 +268,16 @@ unsigned Cache::ReplaceBlock(unsigned set_id)
 			for(unsigned way_id = 0; way_id < num_ways; way_id++)
 			{
 				Block *block = getBlock(set_id, way_id);
+				if(replacement_policy==ReplacementSWLTP && block->rrpv!=RRPV_max_value){
+						block->rrpv+=predictions[way_id];
+				}
 				if(block->rrpv == RRPV_max_value)
 				{
                                         //We are ready to evict a block. Pass the block set id and way id to the swltp
-                                        //function updateLTTable();
-                                        swltp->updateLTTable(set_id, way_id);
 			                block->rrpv = RRPV_max_value - 1;
+					if(replacement_policy==ReplacementSWLTP){
+						swltp->Feedback(way_id);					
+					}
 					return way_id;
 				}
 			}

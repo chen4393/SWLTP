@@ -1117,7 +1117,7 @@ void System::EventFindAndLockHandler(esim::Event *event,
 
 			// Find a victim to evict, only in up-down accesses.
 			assert(!frame->way);
-			frame->way = cache->ReplaceBlock(frame->set);
+			frame->way = cache->ReplaceBlock(frame->set, frame->address);
 		}
 		assert(frame->way >= 0);
 
