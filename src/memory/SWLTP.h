@@ -19,15 +19,14 @@ private:
 
 	class HistoryInfo{
 		public:
-		unsigned PC;
-		unsigned address;
+		int p_encoding;
+		unsigned p_address;
 
 	}
 
 	unsigned num_sets, num_ways;
 	HistoryInfo** HistoryTable;
 	int* DBPT;	
-	int* p_encodings;
 
 	
 
