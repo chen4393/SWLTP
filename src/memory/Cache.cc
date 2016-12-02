@@ -175,7 +175,7 @@ void Cache::setBlock(unsigned set_id,
 	}
 	
 	//Upon insertion, blocks are given a long rereference prediction value, i.e. 2^M - 2
-	if ((replacement_policy == ReplacementSRRIP) || (replacement_policy == ReplacementSWLTP))
+	if ((replacement_policy == ReplacementSRRIP) || (replacement_policy == ReplacementSWLTP) && (block->tag != tag))
 	{
 		block->rrpv = RRPV_max_value - 1;
 	}	
