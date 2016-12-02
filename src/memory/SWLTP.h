@@ -20,6 +20,7 @@ private:
 	class HistoryInfo{
 		public:
 		int p_encoding;
+		unsigned c_address;
 		unsigned p_address;
 
 	}
@@ -35,13 +36,13 @@ public:
 
         
 	//Constructor
-        SSWLTP(unsigned inum_sets, unsigned inum_ways);
+        SWLTP(unsigned inum_sets, unsigned inum_ways);
 	
 	//Given a set and a new address belonging to that set, return an array of predictions for every way
-	int Predict(unsigned set, unsigned way, unsigned address, unsigned pc);
+	int Predict(unsigned set, unsigned way, unsigned pc);
 
 	//For the saturating counter of DBPT, increment or decrement from the array p_encodings
-	void Feedback(unsigned set, unsigned way, unsigned address);
+	void Feedback(unsigned set, unsigned way, unsigned n_addr);
 
 	//Encode a single 1PC2SAddrF
 	int Encode(unsigned mem1, unsigned mem2, unsigned pc1);

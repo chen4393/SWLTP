@@ -37,14 +37,20 @@ SWLTP::SWLTP(unsigned inum_sets, unsigned inum_ways){
 	}
 }
 
-int SWLTP::Predict(unsigned set, unsigned way, unsigned address, unsigned pc){
-	HistoryTable[set][way].p_encoding=Encode(HistoryTable[set][way].p_address, address, pc);
+int SWLTP::Predict(unsigned set, unsigned way, unsigned pc){
+	if(HistoryTable[set][way].p_encoding!=0){
+		DBPT[HistoryTable[set][way].p_encoding]=0;	
+	}
+	
+	HistoryTable[set][way].p_encoding=Encode(HistoryTable[set][way].p_address, HistoryTable[set][way].c_address, pc);
 	return DBPT[HistoryTable[set][way].p_encoding];
 }
 
-void SWLTP::Feedback(unsigned set, unsigned way, unsigned address){ //
+void SWLTP::Feedback(unsigned set, unsigned way, unsigned n_address){ //
 	DBPT[HistoryTable[set][way].p_encoding]=1;
-	HistoryTable[set][way].p_address=address;	
+	HistoryTable[set][way].p_encoding=0;
+	HistoryTable[set][way].p_address=HistoryTable[set][way].c_address;
+	HistoryTable[set][way].c_address=n_address;	
 }
 
 int SWLTP::Encode(unsigned mem1, unsigned mem2, unsigned pc1){

@@ -197,7 +197,7 @@ void Cache::getBlock(unsigned set_id,
 }
 
 
-void Cache::AccessBlock(unsigned set_id, unsigned way_id, unsigned addr, unsigned PC_ref)
+void Cache::AccessBlock(unsigned set_id, unsigned way_id, unsigned PC_ref)
 {
 	// Get set and block
 	Set *set = getSet(set_id);
@@ -220,15 +220,14 @@ void Cache::AccessBlock(unsigned set_id, unsigned way_id, unsigned addr, unsigne
 	//Set the RRPV to '0' on block reference if cache hit, i.e. near-immediate value
         if ((replacement_policy == ReplacementSRRIP) || (replacement_policy == ReplacementSWLTP))
         {
-		block->rrpv = RRPV_max_value*Predict(set_id, way_id, addr, PC_ref);
-               	block->rrpv = RRPV_min_value;
+		block->rrpv = RRPV_max_value*Predict(set_id, way_id, PC_ref);
 
                 
         }
 }
 
 
-unsigned Cache::ReplaceBlock(unsigned set_id)
+unsigned Cache::ReplaceBlock(unsigned set_id, unsigned n_addr)
 {
 	// Get the set
 	Set *set = getSet(set_id);
@@ -255,12 +254,6 @@ unsigned Cache::ReplaceBlock(unsigned set_id)
 	if((replacement_policy == ReplacementSRRIP) || (replacement_policy == ReplacementSWLTP))
 	{
 		int* predictions=null;		
-		if(replacement_policy==ReplacementSWLTP){
-			predictions=(int*)malloc(num_ways*sizeof(int));
-			swltp->Predict(set_id, n_address, predictions);
-			
-
-		}
 		//Perform RRIP RRPV check and update
 		while(true)
 		{
@@ -273,7 +266,7 @@ unsigned Cache::ReplaceBlock(unsigned set_id)
                                         //We are ready to evict a block. Pass the block set id and way id to the swltp
 			                block->rrpv = RRPV_max_value - 1;
 					if(replacement_policy==ReplacementSWLTP){
-						swltp->Feedback(set_id, way_id, block->);					
+						swltp->Feedback(set_id, way_id, n_addr);					
 					}
 					return way_id;
 				}

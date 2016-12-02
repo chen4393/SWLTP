@@ -1221,7 +1221,7 @@ void System::EventFindAndLockHandler(esim::Event *event,
 		// subsequent lookup detects that the block is being brought.
 		// Also, update LRU counters here.
 		cache->setTransientTag(frame->set, frame->way, frame->tag);
-		cache->AccessBlock(frame->set, frame->way, frame->getAddress() ,frame->instr_addr);
+		cache->AccessBlock(frame->set, frame->way, frame->instr_addr);
 
 		// Access latency
 		module->incDirectoryAccesses();
