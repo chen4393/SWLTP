@@ -27,8 +27,8 @@ SWLTP::SWLTP(unsigned inum_sets, unsigned inum_ways){
 
 	for (i = 0; i <  num_sets; i++){
 		for (j = 0; j < num_ways; j++){
-			HistoryTable[i][j].PC =0;
-			HistoryTable[i][j].address=0;
+			HistoryTable[i][j].p_address =0;
+			HistoryTable[i][j].p_encoding=0;
 		}
 	}
 	DBPT=malloc(sizeof(int)*65536);
@@ -37,41 +37,14 @@ SWLTP::SWLTP(unsigned inum_sets, unsigned inum_ways){
 	}
 }
 
-void SWLTP::Predict(unsigned set, unsigned n_address, int* results){
-	int* encodings=(int*)malloc(num_ways*sizeof(int));
-	EncodeSet(set, n_address, encodings);
-	int i=0;
-	for(i=0; i<num_ways; i++){
-		if((DBPT[encodings[i]]==2) || (DBPT[encodings[i]]==3)){
-			results[i]=1; //predict dead
-		} else {
-			results[i]=0;		
-		}
-	}
-	p_encodings=encodings;
+int SWLTP::Predict(unsigned set, unsigned way, unsigned address, unsigned pc){
+	HistoryTable[set][way].p_encoding=Encode(HistoryTable[set][way].p_address, address, pc);
+	return DBPT[HistoryTable[set][way].p_encoding];
 }
 
-void SWLTP::Feedback(unsigned way){ //
-	int i=0;
-	for(i=0; i<num_ways; i++){
-		if(i==way){
-			if(DBPT[p_encodings[i]]<=2){
-				DBPT[p_encodings[i]]++;			
-			}
-		} else {
-			if(DBPT[p_encodings[i]]>=1){
-				DBPT[p_encodings[i]]--;			
-			}
-		}
-	}
-
-}
-
-void SWLTP::EncodeSet(unsigned set, unsigned n_address, int* encodings){
-	i=0;	
-	for(i=0; i<num_ways; i++){
-		encodings[i]=Encode(HistoryTable[set][i].mem_addr, n_address, HistoryTable[set][i].PC);
-	}
+void SWLTP::Feedback(unsigned set, unsigned way, unsigned address){ //
+	DBPT[HistoryTable[set][way].p_encoding]=1;
+	HistoryTable[set][way].p_address=address;	
 }
 
 int SWLTP::Encode(unsigned mem1, unsigned mem2, unsigned pc1){
@@ -80,11 +53,6 @@ int SWLTP::Encode(unsigned mem1, unsigned mem2, unsigned pc1){
 	buffer2^=pc1;
 	buffer2=buffer2>>16;
 	return buffer2^buffer2;
-}
-
-void SWLTP::Update_History(unsigned set, unsigned way, unsigned mem_addr, unsigned pc_addr){
-	HistoryTable[set][way].PC=pc_addr;
-	HistoryTable[set][way].addr=mem_addr;
 }
 
 

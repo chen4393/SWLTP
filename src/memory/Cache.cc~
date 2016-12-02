@@ -228,7 +228,7 @@ void Cache::AccessBlock(unsigned set_id, unsigned way_id, unsigned addr, unsigne
 }
 
 
-unsigned Cache::ReplaceBlock(unsigned set_id, unsigned n_address)
+unsigned Cache::ReplaceBlock(unsigned set_id)
 {
 	// Get the set
 	Set *set = getSet(set_id);
@@ -268,15 +268,12 @@ unsigned Cache::ReplaceBlock(unsigned set_id, unsigned n_address)
 			for(unsigned way_id = 0; way_id < num_ways; way_id++)
 			{
 				Block *block = getBlock(set_id, way_id);
-				if(replacement_policy==ReplacementSWLTP && block->rrpv!=RRPV_max_value){
-						block->rrpv+=predictions[way_id];
-				}
 				if(block->rrpv == RRPV_max_value)
 				{
                                         //We are ready to evict a block. Pass the block set id and way id to the swltp
 			                block->rrpv = RRPV_max_value - 1;
 					if(replacement_policy==ReplacementSWLTP){
-						swltp->Feedback(way_id);					
+						swltp->Feedback(set_id, way_id, block->);					
 					}
 					return way_id;
 				}

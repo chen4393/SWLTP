@@ -35,22 +35,17 @@ public:
 
         
 	//Constructor
-        SWLTP::SWLTP(unsigned inum_sets, unsigned inum_ways);
+        SSWLTP(unsigned inum_sets, unsigned inum_ways);
 	
 	//Given a set and a new address belonging to that set, return an array of predictions for every way
-	void SWLTP::Predict(unsigned set, unsigned n_address, int* results);
+	int Predict(unsigned set, unsigned way, unsigned address, unsigned pc);
 
 	//For the saturating counter of DBPT, increment or decrement from the array p_encodings
-	void SWLTP::Feedback(unsigned way);
-
-	//Encode everything in a set into encodings
-	void SWLTP::EncodeSet(unsigned set, unsigned n_address, int* encodings);
+	void Feedback(unsigned set, unsigned way, unsigned address);
 
 	//Encode a single 1PC2SAddrF
-	int SWLTP::Encode(unsigned mem1, unsigned mem2, unsigned pc1);
+	int Encode(unsigned mem1, unsigned mem2, unsigned pc1);
 
-	//Every time a block is accessed update the memory address and pc address. The constant memory address update may be redundant, however this is the easiest way to ensure SWLTP has the latest address in the history table
-	void SWLTP::Update_History(unsigned set, unsigned way, unsigned mem_addr, unsigned pc_addr);
 };
 
 }
