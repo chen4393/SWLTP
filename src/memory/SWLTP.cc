@@ -36,18 +36,6 @@ SWLTP::SWLTP(unsigned inum_sets, unsigned inum_ways){
 		DBPT[i]=0;	
 	}
 }
-	
-	SWLTP::~SWLTP(unsigned inum_sets, unsigned inum_ways){
-	num_sets=inum_sets;
-	num_ways=inum_ways;
-	HistoryTable=(HistoryInfo**) delete HistoryInfo*[num_sets];
-	unsigned  i=0;
-	for(i=0;i<num_ways; i++){
-		HistoryTable[i]=(HistoryInfo*) delete HistoryInfo[num_ways];	
-	}
-
-	DBPT= delete int[65536];
-}
 
 
 int SWLTP::Predict(unsigned set, unsigned way, unsigned pc){
