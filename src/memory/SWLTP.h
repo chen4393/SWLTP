@@ -23,7 +23,7 @@ private:
 		unsigned c_address;
 		unsigned p_address;
 
-	}
+	};
 
 	unsigned num_sets, num_ways;
 	HistoryInfo** HistoryTable;

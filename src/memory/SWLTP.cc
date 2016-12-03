@@ -19,10 +19,10 @@ namespace mem
 SWLTP::SWLTP(unsigned inum_sets, unsigned inum_ways){
 	num_sets=inum_sets;
 	num_ways=inum_ways;
-	HistoryTable=(HistoryInfo**) malloc (sizeof(num_sets*(HistoryInfo*)));
-	int i=0; int j=0;
+	HistoryTable=(HistoryInfo**) new HistoryInfo*[num_sets];
+	unsigned  i=0; unsigned j=0;
 	for(i=0;i<num_ways; i++){
-		HistoryTable[i]=(HistoryInfo*) malloc (num_ways*sizeof(HistoryInfo));	
+		HistoryTable[i]=(HistoryInfo*) new HistoryInfo[num_ways];	
 	}
 
 	for (i = 0; i <  num_sets; i++){
@@ -31,7 +31,7 @@ SWLTP::SWLTP(unsigned inum_sets, unsigned inum_ways){
 			HistoryTable[i][j].p_encoding=0;
 		}
 	}
-	DBPT=malloc(sizeof(int)*65536);
+	DBPT=new int[65536];
 	for(i=0; i<65536; i++){
 		DBPT[i]=0;	
 	}
