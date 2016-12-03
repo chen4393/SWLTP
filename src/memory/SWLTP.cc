@@ -21,16 +21,15 @@ SWLTP::SWLTP(unsigned inum_sets, unsigned inum_ways){
 	num_ways=inum_ways;
 	HistoryTable=(HistoryInfo**) new HistoryInfo*[num_sets];
 	unsigned  i=0; unsigned j=0;
-	for(i=0;i<num_ways; i++){
+	for(i=0;i<num_sets; i++){
 		HistoryTable[i]=(HistoryInfo*) new HistoryInfo[num_ways];	
-	}
-
-	for (i = 0; i <  num_sets; i++){
 		for (j = 0; j < num_ways; j++){
 			HistoryTable[i][j].p_address =0;
 			HistoryTable[i][j].p_encoding=0;
+			HistoryTable[i][j].c_encoding=0;
 		}
 	}
+
 	DBPT=new int[65536];
 	for(i=0; i<65536; i++){
 		DBPT[i]=0;	
