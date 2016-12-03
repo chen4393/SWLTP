@@ -38,6 +38,9 @@ public:
 	//Constructor
         SWLTP(unsigned inum_sets, unsigned inum_ways);
 	
+	//Destructor
+	~SWLTP(unsigned inum_sets, unsigned inum_ways);
+	
 	//Given a set and a new address belonging to that set, return an array of predictions for every way
 	int Predict(unsigned set, unsigned way, unsigned pc);
 
