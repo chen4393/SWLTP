@@ -41,7 +41,7 @@ SWLTP::SWLTP(unsigned inum_sets, unsigned inum_ways){
 	num_sets=inum_sets;
 	num_ways=inum_ways;
 	HistoryTable=(HistoryInfo**) delete HistoryInfo*[num_sets];
-	unsigned  i=0; unsigned j=0;
+	unsigned  i=0;
 	for(i=0;i<num_ways; i++){
 		HistoryTable[i]=(HistoryInfo*) delete HistoryInfo[num_ways];	
 	}
