@@ -218,9 +218,15 @@ void Cache::AccessBlock(unsigned set_id, unsigned way_id, unsigned PC_ref)
 	}
 
 	//Set the RRPV to '0' on block reference if cache hit, i.e. near-immediate value
-        if ((replacement_policy == ReplacementSRRIP) || (replacement_policy == ReplacementSWLTP))
+        if ((replacement_policy == ReplacementSWLTP))
         {
 		block->rrpv = RRPV_max_value*swltp->Predict(set_id, way_id, PC_ref);
+
+                
+        }
+ if ((replacement_policy == ReplacementSRRIP) )
+        {
+		block->rrpv = RRPV_min_value;
 
                 
         }
