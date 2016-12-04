@@ -93,7 +93,7 @@ public:
 		unsigned way_id = 0;
 
 			// RRPV value, initially 0, optional
-			unsigned rrpv = 0;
+			int rrpv = 0;
 
 		// Block state
 		BlockState state = BlockInvalid;
