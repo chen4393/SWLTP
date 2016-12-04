@@ -27,7 +27,7 @@
 #include "SWLTP.h"
 
 	/// Near immediate re-referenced interval
-	const unsigned RRPV_min_value = 0;
+	const int RRPV_min_value = 0;
 
 namespace mem
 {
