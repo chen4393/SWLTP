@@ -218,7 +218,7 @@ void Cache::AccessBlock(unsigned set_id, unsigned way_id, unsigned PC_ref)
 		set->lru_list.PushFront(block->lru_node);
 	}
 
-	//Set the RRPV to '0' on block reference if cache hit, i.e. near-immediate value
+	//Make a prediction and update RRPV
         if ((replacement_policy == ReplacementSWLTP))
         {
 		int prediction = swltp->Predict(set_id, way_id, PC_ref);
@@ -237,9 +237,21 @@ void Cache::AccessBlock(unsigned set_id, unsigned way_id, unsigned PC_ref)
 
                 
         }
- if ((replacement_policy == ReplacementSRRIP) )
+	
+	//Update RRPV appropriately
+ 	if ((replacement_policy == ReplacementSRRIP) )
         {
-		block->rrpv = RRPV_min_value;
+	 	//block has just been inserted into the cache
+		if (block->rrpv == -1)
+		{
+			block->rrpv = (RRPV_max_value - 1);
+		}
+		
+		//living block is being accessed
+		else
+		{
+			block->rrpv = RRPV_max_value;
+		}
 
                 
         }
