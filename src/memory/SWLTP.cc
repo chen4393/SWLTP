@@ -38,7 +38,7 @@ SWLTP::SWLTP(unsigned inum_sets, unsigned inum_ways){
 
 
 int SWLTP::Predict(unsigned set, unsigned way, unsigned pc){
-	if(HistoryTable[set][way].p_encoding!=0){
+	if(HistoryTable[set][way].p_encoding!=-1){
 		DBPT[HistoryTable[set][way].p_encoding]=0;	
 	}
 	
@@ -48,7 +48,7 @@ int SWLTP::Predict(unsigned set, unsigned way, unsigned pc){
 
 void SWLTP::Feedback(unsigned set, unsigned way, unsigned n_address){ //
 	DBPT[HistoryTable[set][way].p_encoding]=1;
-	HistoryTable[set][way].p_encoding=0;
+	HistoryTable[set][way].p_encoding=-1;
 	HistoryTable[set][way].p_address=HistoryTable[set][way].c_address;
 	HistoryTable[set][way].c_address=n_address;	
 }
