@@ -250,7 +250,7 @@ void Cache::AccessBlock(unsigned set_id, unsigned way_id, unsigned PC_ref)
 		//living block is being accessed
 		else
 		{
-			block->rrpv = RRPV_max_value;
+			block->rrpv = 0;
 		}
 
                 
