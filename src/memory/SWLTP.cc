@@ -26,7 +26,7 @@ SWLTP::SWLTP(unsigned inum_sets, unsigned inum_ways){
 		for (j = 0; j < num_ways; j++){
 			HistoryTable[i][j].p_address =0;
 			HistoryTable[i][j].p_encoding=0;
-			HistoryTable[i][j].c_encoding=0;
+			HistoryTable[i][j].c_address=0;
 		}
 	}
 
