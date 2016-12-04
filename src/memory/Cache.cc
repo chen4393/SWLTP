@@ -174,10 +174,11 @@ void Cache::setBlock(unsigned set_id,
 		set->lru_list.PushFront(block->lru_node);
 	}
 	
-	//Upon insertion, blocks are given a long rereference prediction value, i.e. 2^M - 2
+	//Upon insertion, blocks are given a long rereference prediction value, i.e. 2^M - 2. Set RRPV to -1 to indicated
+	//to AccessBlock that this block has just been placed in the cache
 	if (((replacement_policy == ReplacementSRRIP) || (replacement_policy == ReplacementSWLTP)) && (block->tag != tag))
 	{
-		block->rrpv = RRPV_max_value - 1;
+		block->rrpv = -1;
 	}	
 
 	// Set new values for block
@@ -220,7 +221,19 @@ void Cache::AccessBlock(unsigned set_id, unsigned way_id, unsigned PC_ref)
 	//Set the RRPV to '0' on block reference if cache hit, i.e. near-immediate value
         if ((replacement_policy == ReplacementSWLTP))
         {
-		block->rrpv = RRPV_max_value*swltp->Predict(set_id, way_id, PC_ref);
+		int prediction = swltp->Predict(set_id, way_id, PC_ref);
+		
+		//block has just been inserted into the cache
+		if (block->rrpv == -1)
+		{
+			block->rrpv = prediction ? RRPV_max_value : (RRPV_max_value - 1);
+		}
+		
+		//living block is being accessed
+		else
+		{
+			block->rrpv = RRPV_max_value * prediction;
+		}
 
                 
         }
