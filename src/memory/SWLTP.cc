@@ -57,8 +57,8 @@ int SWLTP::Encode(unsigned mem1, unsigned mem2, unsigned pc1){
 	//needs to be changed, currently just XORs 
 	unsigned buffer2=mem1^mem2;
 	buffer2^=pc1;
-	buffer2=buffer2>>16;
-	return buffer2^buffer2;
+	buffer2&=65535;
+	return buffer2;
 }
 
 
