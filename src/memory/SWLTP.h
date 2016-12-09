@@ -33,6 +33,10 @@ private:
 
 
 public:
+        
+        //number of predicted last touches and number of mispredicted last touches
+        long long MispredictCount;
+        long long LastTouchCount;
 
         
 	//Constructor

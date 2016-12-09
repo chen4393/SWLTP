@@ -36,6 +36,9 @@ class Cache
 {
 public:
 
+        // SWLTP instance
+	SWLTP* swltp;
+
 	/// Possible values for block replacement policy
 	enum ReplacementPolicy
 	{
@@ -131,8 +134,7 @@ public:
 
 private:
 
-	// SWLTP instance
-	SWLTP* swltp;
+	
 
 	// Cache set
 	class Set
@@ -165,7 +167,7 @@ private:
 	int log_block_size;
 
 		// RRPV maximum value per cache block
-		unsigned RRPV_max_value;
+		int RRPV_max_value;
 	
 	// Block replacement policy
 	ReplacementPolicy replacement_policy;
@@ -332,6 +334,7 @@ public:
 
 	/// Return the log2 of the block size
 	int getLogBlockSize() const { return log_block_size; }
+
 };
 
 

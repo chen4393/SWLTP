@@ -38,11 +38,23 @@ SWLTP::SWLTP(unsigned inum_sets, unsigned inum_ways){
 
 
 int SWLTP::Predict(unsigned set, unsigned way, unsigned pc){
+
+        //performance evaluation metric - if the past encoding matches an entry in the table,
+        // then we know that this block is being referenced again after a predicted last touch.
+        // this is very bad! - Zach
+        if(DBPT[HistoryTable[set][way].p_encoding] == 1)
+                this->MispredictCount++;        
+
 	if(HistoryTable[set][way].p_encoding!=-1){
 		DBPT[HistoryTable[set][way].p_encoding]=0;	
 	}
 	
 	HistoryTable[set][way].p_encoding=Encode(HistoryTable[set][way].p_address, HistoryTable[set][way].c_address, pc);
+
+        //Last touch count for testing 
+        if(DBPT[HistoryTable[set][way].p_encoding] == 1)
+                this->LastTouchCount++;
+        
 	return DBPT[HistoryTable[set][way].p_encoding];
 }
 

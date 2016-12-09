@@ -404,6 +404,13 @@ void Module::Dump(std::ostream &os) const
 				cache->getReplacementPolicy()) << "\n";
 		os << "WritePolicy = " << cache->WritePolicyMap.MapValue(
 				cache->getWritePolicy()) << "\n";
+                if(cache->getReplacementPolicy() == Cache::ReplacementSWLTP)
+                {
+                        os << misc::fmt("Last Touches Predicted = %lld \n", 
+                                        cache->swltp->LastTouchCount);
+                        os << misc::fmt("Misprediction Count = %lld \n",
+                                        cache->swltp->MispredictCount);
+                }
 	}
 
 	// Dump the module information
@@ -418,6 +425,7 @@ void Module::Dump(std::ostream &os) const
 			num_coalesced_writes + num_coalesced_nc_writes);
 	os << misc::fmt("RetriedAccesses = %lld\n", num_retry_accesses);
 	os << misc::fmt("Evictions = %lld\n", num_evictions);
+        
 
 	// Statistics - Hits and misses
 	long long int num_hits = num_read_hits + num_write_hits 
