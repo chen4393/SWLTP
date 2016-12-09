@@ -12,7 +12,7 @@
 
 
 #include "SWLTP.h"
-
+#include <stdlib.h>
 namespace mem
 {
 
@@ -25,7 +25,7 @@ SWLTP::SWLTP(unsigned inum_sets, unsigned inum_ways){
 		HistoryTable[i]=(HistoryInfo*) new HistoryInfo[num_ways];	
 		for (j = 0; j < num_ways; j++){
 			HistoryTable[i][j].p_address =0;
-			HistoryTable[i][j].p_encoding=0;
+			HistoryTable[i][j].p_encoding=-1;
 			HistoryTable[i][j].c_address=0;
 		}
 	}
@@ -34,6 +34,10 @@ SWLTP::SWLTP(unsigned inum_sets, unsigned inum_ways){
 	for(i=0; i<65536; i++){
 		DBPT[i]=0;	
 	}
+
+        //initialize last touch count, misprediction count
+        LastTouchCount = 0;
+        MispredictCount = 0;
 }
 
 
@@ -42,9 +46,13 @@ int SWLTP::Predict(unsigned set, unsigned way, unsigned pc){
         //performance evaluation metric - if the past encoding matches an entry in the table,
         // then we know that this block is being referenced again after a predicted last touch.
         // this is very bad! - Zach
-        if(DBPT[HistoryTable[set][way].p_encoding] == 1)
-                this->MispredictCount++;        
-
+        if(HistoryTable[set][way].p_encoding != -1)
+        {
+                if(DBPT[HistoryTable[set][way].p_encoding] == 1)
+                {   
+                        this->MispredictCount++;        
+                }         
+        }
 	if(HistoryTable[set][way].p_encoding!=-1){
 		DBPT[HistoryTable[set][way].p_encoding]=0;	
 	}

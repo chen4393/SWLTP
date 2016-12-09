@@ -35,8 +35,9 @@ private:
 public:
         
         //number of predicted last touches and number of mispredicted last touches
-        long long MispredictCount;
-        long long LastTouchCount;
+
+        long long MispredictCount = 0;
+        long long LastTouchCount = 0;
 
         
 	//Constructor
