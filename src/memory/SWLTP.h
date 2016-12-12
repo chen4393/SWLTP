@@ -22,7 +22,7 @@ private:
 		int p_encoding;
 		unsigned c_address;
 		unsigned p_address;
-
+                bool ltPredicted; // used to generate misprediction statistics
 	};
 
 	unsigned num_sets, num_ways;

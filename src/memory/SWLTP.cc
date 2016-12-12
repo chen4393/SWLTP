@@ -46,38 +46,47 @@ int SWLTP::Predict(unsigned set, unsigned way, unsigned pc){
         //performance evaluation metric - if the past encoding matches an entry in the table,
         // then we know that this block is being referenced again after a predicted last touch.
         // this is very bad! - Zach
-        if(HistoryTable[set][way].p_encoding != -1)
-        {
-                if(DBPT[HistoryTable[set][way].p_encoding] == 1)
-                {   
-                        this->MispredictCount++;        
-                }         
+
+        if(HistoryTable[set][way].ltPredicted)
+        { 
+                 //If the last touch for this block has been predicted already,
+                 // then another access to the block would mean we have mispredicted a last touch
+                 this->MispredictCount++;
+                 HistoryTable[set][way].ltPredicted = false;
         }
-	if(HistoryTable[set][way].p_encoding!=-1){
-		DBPT[HistoryTable[set][way].p_encoding]=0;	
-	}
+
+	if(HistoryTable[set][way].p_encoding != -1)
+        {
+
+                DBPT[HistoryTable[set][way].p_encoding] = 0;
+        }
 	
 	HistoryTable[set][way].p_encoding=Encode(HistoryTable[set][way].p_address, HistoryTable[set][way].c_address, pc);
 
-        //Last touch count for testing 
+        //On last touch, update the last touch count and set the prediction value to 'true'
         if(DBPT[HistoryTable[set][way].p_encoding] == 1)
+        {
                 this->LastTouchCount++;
-        
+                HistoryTable[set][way].ltPredicted = true;
+        }
 	return DBPT[HistoryTable[set][way].p_encoding];
 }
 
-void SWLTP::Feedback(unsigned set, unsigned way, unsigned n_address){ //
+void SWLTP::Feedback(unsigned set, unsigned way, unsigned n_address){ // on eviction, clear history table for this block
 	DBPT[HistoryTable[set][way].p_encoding]=1;
 	HistoryTable[set][way].p_encoding=-1;
 	HistoryTable[set][way].p_address=HistoryTable[set][way].c_address;
 	HistoryTable[set][way].c_address=n_address;	
+        HistoryTable[set][way].ltPredicted = false;
 }
 
 int SWLTP::Encode(unsigned mem1, unsigned mem2, unsigned pc1){
 	//needs to be changed, currently just XORs 
-	unsigned buffer2=mem1^mem2;
+  unsigned buffer2=mem1^mem2; // current address and last address
 	buffer2^=pc1;
-	buffer2&=65535;
+        buffer2 >>= 4;
+	buffer2&=65535; // takes last 16 bits
+
 	return buffer2;
 }
 
