@@ -291,11 +291,11 @@ public:
 			BlockState &state) const;
 
 	/// Perform the block access - for purposes of updating cache replacement scores only
-	void AccessBlock(unsigned set_id, unsigned way_id, unsigned PC_ref = 0);
+	void AccessBlock(unsigned set_id, unsigned way_id, unsigned PC_ref = 0, unsigned n_addr = 0);
 
 	/// Return the way index of the block to be replaced in the given set,
 	/// as per the current block replacement policy.
-	unsigned ReplaceBlock(unsigned set_id, unsigned n_address);
+	unsigned ReplaceBlock(unsigned set_id);
 
 	/// Set the transient tag of a block.
 	void setTransientTag(unsigned set_id, unsigned way_id, unsigned tag)

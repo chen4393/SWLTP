@@ -198,7 +198,7 @@ void Cache::getBlock(unsigned set_id,
 }
 
 
-void Cache::AccessBlock(unsigned set_id, unsigned way_id, unsigned PC_ref)
+void Cache::AccessBlock(unsigned set_id, unsigned way_id, unsigned PC_ref, unsigned n_addr)
 {
 	// Get set and block
 	Set *set = getSet(set_id);
@@ -221,7 +221,7 @@ void Cache::AccessBlock(unsigned set_id, unsigned way_id, unsigned PC_ref)
 	//Make a prediction and update RRPV
         if ((replacement_policy == ReplacementSWLTP))
         {
-		int prediction = swltp->Predict(set_id, way_id, PC_ref);
+		int prediction = swltp->Predict(set_id, way_id, PC_ref, n_addr);
 		
 		//block has just been inserted into the cache
 		if (block->rrpv == -1)
@@ -258,7 +258,7 @@ void Cache::AccessBlock(unsigned set_id, unsigned way_id, unsigned PC_ref)
 }
 
 
-unsigned Cache::ReplaceBlock(unsigned set_id, unsigned n_addr)
+unsigned Cache::ReplaceBlock(unsigned set_id)
 {
 	// Get the set
 	Set *set = getSet(set_id);
@@ -295,8 +295,11 @@ unsigned Cache::ReplaceBlock(unsigned set_id, unsigned n_addr)
 				{
                                         //We are ready to evict a block. Pass the block set id and way id to the swltp
 			                block->rrpv = RRPV_max_value - 1;
-					if(replacement_policy==ReplacementSWLTP){
-						swltp->Feedback(set_id, way_id, n_addr);					
+        
+					if(replacement_policy==ReplacementSWLTP)
+                                        {
+                                                //if we must, update the last touch table
+						swltp->Feedback(set_id, way_id);					
 					}
 					return way_id;
 				}

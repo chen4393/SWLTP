@@ -41,11 +41,8 @@ SWLTP::SWLTP(unsigned inum_sets, unsigned inum_ways){
 }
 
 
-int SWLTP::Predict(unsigned set, unsigned way, unsigned pc){
-
-        //performance evaluation metric - if the past encoding matches an entry in the table,
-        // then we know that this block is being referenced again after a predicted last touch.
-        // this is very bad! - Zach
+int SWLTP::Predict(unsigned set, unsigned way, unsigned pc, unsigned n_addr)
+{
 
         if(HistoryTable[set][way].ltPredicted)
         { 
@@ -57,32 +54,49 @@ int SWLTP::Predict(unsigned set, unsigned way, unsigned pc){
 
 	if(HistoryTable[set][way].p_encoding != -1)
         {
-
+        
+                //bad signature (or aliasing...) set counter to 0
                 DBPT[HistoryTable[set][way].p_encoding] = 0;
         }
+
+        //update history table - why weren't we doing this before?
+        HistoryTable[set][way].p_address = HistoryTable[set][way].c_address;
+        HistoryTable[set][way].c_address = n_addr;
 	
-	HistoryTable[set][way].p_encoding=Encode(HistoryTable[set][way].p_address, HistoryTable[set][way].c_address, pc);
+        //Encode new trace
+	HistoryTable[set][way].p_encoding = 
+                Encode(HistoryTable[set][way].p_address, HistoryTable[set][way].c_address, pc);
 
         //On last touch, update the last touch count and set the prediction value to 'true'
-        if(DBPT[HistoryTable[set][way].p_encoding] == 1)
+        // If saturating counter is 2 or 3 for this signature, predict last touch
+        if(DBPT[HistoryTable[set][way].p_encoding] > 1)
         {
                 this->LastTouchCount++;
                 HistoryTable[set][way].ltPredicted = true;
+                return 1;
         }
-	return DBPT[HistoryTable[set][way].p_encoding];
+
+        //if it is not, don't predict last touch
+        
+        //return '1' if last touch, '0' if not
+	return 0;
 }
 
-void SWLTP::Feedback(unsigned set, unsigned way, unsigned n_address){ // on eviction, clear history table for this block
-	DBPT[HistoryTable[set][way].p_encoding]=1;
-	HistoryTable[set][way].p_encoding=-1;
-	HistoryTable[set][way].p_address=HistoryTable[set][way].c_address;
-	HistoryTable[set][way].c_address=n_address;	
+void SWLTP::Feedback(unsigned set, unsigned way)
+{       // on eviction, clear history table for this block
+	DBPT[HistoryTable[set][way].p_encoding] = 3 ? 3 : DBPT[HistoryTable[set][way].p_encoding] + 1;
+
+        //on eviction, clear history table for this block
+	HistoryTable[set][way].p_encoding = -1;
+	HistoryTable[set][way].p_address = 0;
+	HistoryTable[set][way].c_address = 0;	
         HistoryTable[set][way].ltPredicted = false;
 }
 
-int SWLTP::Encode(unsigned mem1, unsigned mem2, unsigned pc1){
-	//needs to be changed, currently just XORs 
-  unsigned buffer2=mem1^mem2; // current address and last address
+int SWLTP::Encode(unsigned mem1, unsigned mem2, unsigned pc1)
+{
+	//XOR style hashing
+        unsigned buffer2=mem1^mem2; // current address and last address
 	buffer2^=pc1;
         buffer2 >>= 4;
 	buffer2&=65535; // takes last 16 bits
