@@ -226,7 +226,7 @@ void Cache::AccessBlock(unsigned set_id, unsigned way_id, unsigned PC_ref)
         }
  if ((replacement_policy == ReplacementSRRIP) )
         {
-		block->rrpv = RRPV_max_value*swltp->Predict(set_id, way_id, PC_ref);
+		block->rrpv = RRPV_min_value;
 
                 
         }
